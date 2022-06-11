@@ -22,7 +22,7 @@
       <div class="sidebar__logo">
         <img
           height="14"
-          src="@baserow/modules/core/static/img/nika.svg"
+          src="@baserow/modules/core/static/img/logo.svg"
           alt="Baserow logo"
         />
       </div>

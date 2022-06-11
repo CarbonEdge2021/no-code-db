@@ -3,7 +3,7 @@
     <div class="box__head">
       <h1 class="box__head-title">
         <nuxt-link :to="{ name: 'index' }">
-          <img src="@baserow/modules/core/static/img/nika.svg" alt="" />
+          <img src="@baserow/modules/core/static/img/logo.svg" alt="" />
         </nuxt-link>
       </h1>
       <LangPicker />
