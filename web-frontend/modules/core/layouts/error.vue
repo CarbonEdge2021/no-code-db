@@ -4,7 +4,7 @@
       <nuxt-link :to="{ name: 'index' }">
         <img
           class="placeholder__logo-image"
-          src="@baserow/modules/core/static/img/logo.svg"
+          src="@baserow/modules/core/static/img/nika.svg"
           alt=""
         />
       </nuxt-link>

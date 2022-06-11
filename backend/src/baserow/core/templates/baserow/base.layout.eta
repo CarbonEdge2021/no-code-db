@@ -76,7 +76,7 @@
         <mj-image
             align="left"
             width="140px"
-            src="{{ public_web_frontend_url }}/img/logo.svg"
+            src="{{ public_web_frontend_url }}/img/nika.svg"
             href="{{ public_web_frontend_url }}"
             padding-bottom="0"
         ></mj-image>
