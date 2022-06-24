@@ -1,6 +1,9 @@
 from abc import ABC
+from asyncio.proactor_events import constants
 from decimal import Decimal
 from typing import List, Optional, Type, Dict, Set
+import json
+import kg_co2e
 
 from django.contrib.postgres.aggregates import JSONBAgg
 from django.db.models import (
@@ -433,12 +436,14 @@ class BaserowDivide(TwoArgumentBaserowFunction):
             arg1
             / Case(
                 When(
-                    condition=(EqualsExpr(arg2, 0, output_field=fields.BooleanField())),
+                    condition=(EqualsExpr(
+                        arg2, 0, output_field=fields.BooleanField())),
                     then=Value(Decimal("NaN")),
                 ),
                 default=arg2,
             ),
-            output_field=fields.DecimalField(decimal_places=NUMBER_MAX_DECIMAL_PLACES),
+            output_field=fields.DecimalField(
+                decimal_places=NUMBER_MAX_DECIMAL_PLACES),
         )
 
 
@@ -525,6 +530,29 @@ class BaserowIf(ThreeArgumentBaserowFunction):
             default=arg3,
             output_field=arg1.output_field,
         )
+
+
+class BaserowElectricityToCo2e(ThreeArgumentBaserowFunction):
+    type = "electricity_to_co2e"
+    operator = "e2c"
+    arg1_type = [BaserowFormulaNumberType]
+    arg2_type = [BaserowFormulaTextType]
+    arg3_type = [BaserowFormulaTextType]
+
+    def type_function(
+        self,
+        func_call: BaserowFunctionCall[UnTyped],
+        arg1: BaserowExpression[BaserowFormulaNumberType],
+        arg2: BaserowExpression[BaserowFormulaTextType],
+        arg3: BaserowExpression[BaserowFormulaTextType],
+    ) -> BaserowExpression[BaserowFormulaType]:
+        return func_call.with_valid_type(
+            BaserowFormulaNumberType(number_decimal_places=10)
+        )
+
+    def to_django_expression(self, arg1: Expression, arg2: Expression, arg3: Expression) -> Expression:
+        co2e = json.loads(kg_co2e.kgco2e)
+        return ExpressionWrapper(arg1 * co2e[arg2 + '-' + arg3], output_field=arg1.output_field)
 
 
 class BaserowToNumber(OneArgumentBaserowFunction):
