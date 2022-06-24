@@ -114,6 +114,7 @@ def register_formula_functions(registry):
     # Number functions
     registry.register(BaserowMultiply())
     registry.register(BaserowDivide())
+    registry.register(BaserowElectricityToCo2e())
     registry.register(BaserowToNumber())
     registry.register(BaserowErrorToNan())
     registry.register(BaserowGreatest())

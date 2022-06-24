@@ -10,21 +10,21 @@ export class BaserowFunctionDefinition extends Registerable {
   getSyntaxUsage() {
     throw new Error(
       'Not implemented error. This method should return a string showing the syntax ' +
-        'of the function.'
+      'of the function.'
     )
   }
 
   getExamples() {
     throw new Error(
       'Not implemented error. This method should return list of strings showing ' +
-        'example usage of the function.'
+      'example usage of the function.'
     )
   }
 
   getFormulaType() {
     throw new Error(
       'Not implemented error. This method should return the baserow formula type ' +
-        'string of the function.'
+      'string of the function.'
     )
   }
 
@@ -365,6 +365,31 @@ export class BaserowToNumber extends BaserowFunctionDefinition {
   }
 }
 
+
+export class BaserowElectricityToCo2e extends BaserowFunctionDefinition {
+  static getType() {
+    return 'electricitytoco2e'
+  }
+
+  getDescription() {
+    const { i18n } = this.app
+    return i18n.t('formulaFunctions.electricityToCo2eDescription')
+  }
+
+  getSyntaxUsage() {
+    return ['number * number', 'electricityToCo2e(number, text, text)']
+
+  }
+
+  getExamples() {
+    return ["electricityToCo2e('10', 'SG', '2012') = 100"]
+  }
+
+  getFormulaType() {
+    return 'number'
+  }
+}
+
 export class BaserowField extends BaserowFunctionDefinition {
   static getType() {
     return 'field'
@@ -681,7 +706,7 @@ export class BaserowDateDiff extends BaserowFunctionDefinition {
   getExamples() {
     return [
       "date_diff('yy', todate('2000-01-01', 'YYYY-MM-DD'), todate('2020-01-01'," +
-        " 'YYYY-MM-DD')) = 20",
+      " 'YYYY-MM-DD')) = 20",
     ]
   }
 
@@ -1493,14 +1518,14 @@ export class BaserowFilter extends BaserowFunctionDefinition {
   getSyntaxUsage() {
     return [
       'filter(an expression involving lookup() or field(a link/lookup field),' +
-        ' boolean)',
+      ' boolean)',
     ]
   }
 
   getExamples() {
     return [
       'sum(filter(lookup("link field", "number field"), lookup("link field", "number' +
-        ' field") > 10))',
+      ' field") > 10))',
       'filter(field("lookup field"), contains(field("lookup field"), "a"))',
       'filter(field("link field") + "a", length(field("link field")) > 10")',
     ]
