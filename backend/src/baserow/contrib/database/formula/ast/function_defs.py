@@ -1,9 +1,7 @@
 from abc import ABC
-from asyncio.proactor_events import constants
 from decimal import Decimal
 from typing import List, Optional, Type, Dict, Set
 import json
-import kg_co2e
 
 from django.contrib.postgres.aggregates import JSONBAgg
 from django.db.models import (
@@ -46,6 +44,7 @@ from django.db.models.functions import (
 from baserow.contrib.database.fields.models import (
     NUMBER_MAX_DECIMAL_PLACES,
 )
+
 from baserow.contrib.database.formula.ast.function import (
     BaserowFunctionDefinition,
     NumOfArgsGreaterThan,
@@ -94,6 +93,8 @@ from baserow.contrib.database.formula.types.formula_types import (
 )
 from baserow.contrib.database.formula.types.type_checkers import OnlyIntegerNumberTypes
 
+KG_CO2E = {"SG-2012": 11}
+
 
 def register_formula_functions(registry):
     # Text functions
@@ -114,8 +115,8 @@ def register_formula_functions(registry):
     # Number functions
     registry.register(BaserowMultiply())
     registry.register(BaserowDivide())
-    registry.register(BaserowElectricityToCo2e())
     registry.register(BaserowToNumber())
+    registry.register(BaserowElectricityToCo2e())
     registry.register(BaserowErrorToNan())
     registry.register(BaserowGreatest())
     registry.register(BaserowLeast())
@@ -533,29 +534,6 @@ class BaserowIf(ThreeArgumentBaserowFunction):
         )
 
 
-class BaserowElectricityToCo2e(ThreeArgumentBaserowFunction):
-    type = "electricity_to_co2e"
-    operator = "e2c"
-    arg1_type = [BaserowFormulaNumberType]
-    arg2_type = [BaserowFormulaTextType]
-    arg3_type = [BaserowFormulaTextType]
-
-    def type_function(
-        self,
-        func_call: BaserowFunctionCall[UnTyped],
-        arg1: BaserowExpression[BaserowFormulaNumberType],
-        arg2: BaserowExpression[BaserowFormulaTextType],
-        arg3: BaserowExpression[BaserowFormulaTextType],
-    ) -> BaserowExpression[BaserowFormulaType]:
-        return func_call.with_valid_type(
-            BaserowFormulaNumberType(number_decimal_places=10)
-        )
-
-    def to_django_expression(self, arg1: Expression, arg2: Expression, arg3: Expression) -> Expression:
-        co2e = json.loads(kg_co2e.kgco2e)
-        return ExpressionWrapper(arg1 * co2e[arg2 + '-' + arg3], output_field=arg1.output_field)
-
-
 class BaserowToNumber(OneArgumentBaserowFunction):
     type = "tonumber"
     arg_type = [BaserowFormulaTextType]
@@ -575,6 +553,45 @@ class BaserowToNumber(OneArgumentBaserowFunction):
             function="try_cast_to_numeric",
             output_field=fields.DecimalField(decimal_places=0),
         )
+
+
+class BaserowElectricityToCo2e(ThreeArgumentBaserowFunction):
+    type = "electricitytoco2e"
+    operator = "e2c"
+    arg1_type = [BaserowFormulaNumberType]
+    arg2_type = [BaserowFormulaTextType]
+    arg3_type = [BaserowFormulaTextType]
+
+    def type_function(
+        self,
+        func_call: BaserowFunctionCall[UnTyped],
+        arg1: BaserowExpression[BaserowFormulaNumberType],
+        arg2: BaserowExpression[BaserowFormulaTextType],
+        arg3: BaserowExpression[BaserowFormulaTextType],
+    ) -> BaserowExpression[BaserowFormulaType]:
+        return func_call.with_valid_type(
+            BaserowFormulaNumberType(number_decimal_places=10)
+        )
+
+    def to_django_expression(self, arg1: Expression, arg2: Expression, arg3: Expression) -> Expression:
+        # co2e = json.loads(kg_co2e.kgco2e)
+        country = arg2.output_field.default
+        year = arg3.output_field.default
+        key = country + '-' + year
+        multiplyNumber = 1
+        if key in KG_CO2E:
+            multiplyNumber = KG_CO2E[country + '-' + year]
+
+        # print(dir(arg2.output_field))
+        # print(dir(arg2.output_field))
+        # print(arg2.output_field('database_table.Table21Model.field_419'))
+        # 'database_table.Table21Model.field_419'
+        # text_default
+        # if KG_CO2E[arg2 + '-' + arg3] > 0:
+        #     multiplyNumber = KG_CO2E[arg2 + '-' + arg3]
+        return ExpressionWrapper(arg1 * multiplyNumber, output_field=arg1.output_field)
+        # return ExpressionWrapper(arg1 * 3, output_field=arg1.output_field)
+    # type = "tonumber"
 
 
 class BaserowErrorToNan(OneArgumentBaserowFunction):

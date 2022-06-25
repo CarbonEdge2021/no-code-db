@@ -382,7 +382,7 @@ export class BaserowElectricityToCo2e extends BaserowFunctionDefinition {
   }
 
   getExamples() {
-    return ["electricityToCo2e('10', 'SG', '2012') = 100"]
+    return ["electricityToCo2e(10, 'SG', '2012') = 100"]
   }
 
   getFormulaType() {
