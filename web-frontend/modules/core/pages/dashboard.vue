@@ -14,7 +14,7 @@
         {{ $t('dashboard.alertText') }}
       </p>
       <a
-        href="https://github.com/sponsors/bram2w"
+        href="https://join.slack.com/t/nika-esg/shared_invite/zt-18ut3vys6-Z6hrxdkSz1C~7BPxdoOEAw"
         target="_blank"
         rel="noopener noreferrer"
         class="button button--primary dashboard__alert-button"

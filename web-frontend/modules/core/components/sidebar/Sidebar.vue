@@ -230,7 +230,7 @@
       <div class="sidebar__foot sidebar__foot--with-undo-redo">
         <div class="sidebar__logo">
           <img
-            height="14"
+            height="24"
             src="@baserow/modules/core/static/img/logo.svg"
             alt="Baserow logo"
           />
