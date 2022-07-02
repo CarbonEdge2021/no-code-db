@@ -36,7 +36,46 @@
         :key="application.id"
         class="dashboard__group-item"
       >
-        <a
+        <div class="group-item">
+          <a
+            class="dashboard__group-item-link"
+            @click="selectApplication(application)"
+          >
+            <div class="dashboard__group-item-name">
+              {{ application.name }}
+            </div></a
+          >
+
+          <div class="dashboard__group-item-esg">
+            <div>-2.6kt CO2e/month</div>
+            <div>S1 & S2</div>
+          </div>
+          <!-- <b-progress
+            :value="value"
+            :max="max"
+            class="dashboard__group-item-esg-bar"
+          ></b-progress> -->
+          <div class="dashboard__group-item-esg">
+            <div>-1.1kt CO2e/month</div>
+            <div>S3</div>
+          </div>
+          <div class="item-action-row">
+            <label for="toggle_button" class="check-box-text">
+              <span v-if="isPrivate">Private</span>
+              <span v-if="!isPrivate">Public</span>
+              <input
+                type="checkbox"
+                id="toggle_button"
+                class="m-l-10"
+                v-model="checkedValue"
+              />
+            </label>
+
+            <i class="fas fa-cog" @click="openSettings(application)"></i>
+          </div>
+        </div>
+
+        <!-- <a
           class="dashboard__group-item-link"
           @click="selectApplication(application)"
         >
@@ -46,7 +85,7 @@
           <div class="dashboard__group-item-name">
             {{ application.name }}
           </div>
-        </a>
+        </a> -->
       </li>
       <li class="dashboard__group-item">
         <a
@@ -58,11 +97,6 @@
             )
           "
         >
-          <div
-            class="dashboard__group-item-icon dashboard__group-item-icon--add"
-          >
-            <i class="fas fa-plus"></i>
-          </div>
           <div class="dashboard__group-item-name">
             {{ $t('dashboardGroup.createApplication') }}
           </div>
@@ -83,6 +117,14 @@ import CreateApplicationContext from '@baserow/modules/core/components/applicati
 import GroupContext from '@baserow/modules/core/components/group/GroupContext'
 import editGroup from '@baserow/modules/core/mixins/editGroup'
 
+// import { BProgress } from 'bootstrap-vue'
+
+// Vue.component('b-progress', BProgress)
+
+// // Import Bootstrap and BootstrapVue CSS files (order is important)
+// import 'bootstrap/dist/css/bootstrap.css'
+// import 'bootstrap-vue/dist/bootstrap-vue.css'
+
 export default {
   components: {
     CreateApplicationContext,
@@ -94,17 +136,38 @@ export default {
       type: Object,
       required: true,
     },
+    data() {
+      return {
+        currentState: false,
+        // value: 33,
+        // max: 50,
+      }
+    },
   },
   computed: {
     ...mapGetters({
       getAllOfGroup: 'application/getAllOfGroup',
     }),
+
+    isPrivate() {
+      return this.currentState
+    },
+
+    checkedValue: {
+      get() {
+        return this.defaultState
+      },
+      set(newValue) {
+        this.currentState = newValue
+      },
+    },
   },
   methods: {
     selectApplication(application) {
       const type = this.$registry.get('application', application.type)
       type.select(application, this)
     },
+    openSettings(application) {},
   },
 }
 </script>
