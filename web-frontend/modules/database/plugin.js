@@ -111,6 +111,7 @@ import {
   BaserowT,
   BaserowToDate,
   BaserowToNumber,
+  BaserowElectricityToCo2e,
   BaserowToText,
   BaserowUpper,
   BaserowReverse,
@@ -322,6 +323,7 @@ export default (context) => {
   app.$registry.register('formula_function', new BaserowMultiply(context))
   app.$registry.register('formula_function', new BaserowDivide(context))
   app.$registry.register('formula_function', new BaserowToNumber(context))
+  app.$registry.register('formula_function', new BaserowElectricityToCo2e(context))
   // Boolean functions
   app.$registry.register('formula_function', new BaserowIf(context))
   app.$registry.register('formula_function', new BaserowEqual(context))
