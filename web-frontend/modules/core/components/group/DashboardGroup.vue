@@ -45,19 +45,31 @@
               {{ application.name }}
             </div></a
           >
-
           <div class="dashboard__group-item-esg">
             <div>-2.6kt CO2e/month</div>
             <div>S1 & S2</div>
           </div>
-          <!-- <b-progress
-            :value="value"
-            :max="max"
-            class="dashboard__group-item-esg-bar"
-          ></b-progress> -->
+          <div class="bar">
+            <div
+              class="progress"
+              v-bind:style="{ width: '70%', 'background-color': '#16324f' }"
+            ></div>
+          </div>
+          <div class="bar m-t-10">
+            <div
+              class="progress"
+              v-bind:style="{ width: '60%', 'background-color': '#2a628f' }"
+            ></div>
+          </div>
           <div class="dashboard__group-item-esg">
             <div>-1.1kt CO2e/month</div>
             <div>S3</div>
+          </div>
+          <div class="bar">
+            <div
+              class="progress"
+              v-bind:style="{ width: '50%', 'background-color': '#667761' }"
+            ></div>
           </div>
           <div class="item-action-row">
             <label for="toggle_button" class="check-box-text">
@@ -74,37 +86,27 @@
             <i class="fas fa-cog" @click="openSettings(application)"></i>
           </div>
         </div>
-
-        <!-- <a
-          class="dashboard__group-item-link"
-          @click="selectApplication(application)"
-        >
-          <div class="dashboard__group-item-icon">
-            <i class="fas" :class="'fa-' + application._.type.iconClass"></i>
-          </div>
-          <div class="dashboard__group-item-name">
-            {{ application.name }}
-          </div>
-        </a> -->
       </li>
       <li class="dashboard__group-item">
-        <a
-          ref="createApplicationContextLink"
-          class="dashboard__group-item-link"
-          @click="
-            $refs.createApplicationContext.toggle(
-              $refs.createApplicationContextLink
-            )
-          "
-        >
-          <div class="dashboard__group-item-name">
-            {{ $t('dashboardGroup.createApplication') }}
-          </div>
-        </a>
-        <CreateApplicationContext
-          ref="createApplicationContext"
-          :group="group"
-        ></CreateApplicationContext>
+        <div class="group-item">
+          <a
+            ref="createApplicationContextLink"
+            class="dashboard__group-item-link"
+            @click="
+              $refs.createApplicationContext.toggle(
+                $refs.createApplicationContextLink
+              )
+            "
+          >
+            <div class="dashboard__group-item-name m-b-0">
+              {{ $t('dashboardGroup.createApplication') }}
+            </div></a
+          >
+          <CreateApplicationContext
+            ref="createApplicationContext"
+            :group="group"
+          ></CreateApplicationContext>
+        </div>
       </li>
     </ul>
   </div>
@@ -116,14 +118,6 @@ import { mapGetters } from 'vuex'
 import CreateApplicationContext from '@baserow/modules/core/components/application/CreateApplicationContext'
 import GroupContext from '@baserow/modules/core/components/group/GroupContext'
 import editGroup from '@baserow/modules/core/mixins/editGroup'
-
-// import { BProgress } from 'bootstrap-vue'
-
-// Vue.component('b-progress', BProgress)
-
-// // Import Bootstrap and BootstrapVue CSS files (order is important)
-// import 'bootstrap/dist/css/bootstrap.css'
-// import 'bootstrap-vue/dist/bootstrap-vue.css'
 
 export default {
   components: {
@@ -139,8 +133,6 @@ export default {
     data() {
       return {
         currentState: false,
-        // value: 33,
-        // max: 50,
       }
     },
   },
